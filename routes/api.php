@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\GameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('api.login');
 
     Route::post('/logout', [LogoutController::class, 'logout'])->name('api.logout');
     Route::get('/users', [UserController::class, 'index'])->name('api.users.index');
+    Route::put('players/{id}', [UserController::class, 'updateName'])->name('api.players.updateName');
 
+    Route::post('players/{id}/games', [GameController::class, 'rollDice'])->name('api.players.rollDice');
+    Route::delete('players/{id}/games', [GameController::class, 'delete'])->name('api.players.delete');
 // });
-

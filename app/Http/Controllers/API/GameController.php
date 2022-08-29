@@ -74,45 +74,33 @@ class GameController extends Controller
 
             }
         }
-
-
-
-
-        
-        
-        // Game::where('user_id', $id)->delete();
-        
-        // return response([
-        //     "message" => "Las jugadas del usuario $userName han sido eliminadas del sistema."], 200);
-       
-
-
-
-
-
-
-
-        // $userName = User::find($id)->name;
-        // $idUser = DB::table('games')->where('user_id', '=', $id);
-
-        // if(!User::find($id)){
-
-        //         return response(["message" => "Unregistered user."], 422);
-            
-        //     }elseif($idUser->first('id') == null){
-
-        //         return response()->json([
-        //         "message" =>  "User $userName has no moves to delete.",
-        //         ]);
-        
-        
-        //     }else{
-        //     $idUser->delete();
-        //         return response()->json([
-        //         "message" =>  "User $userName's moves have been deleted.",
-        //     ]);
-        // }
     }
+
+    public function show($id){
+        
+
+        if (!User::find($id)) {
+            return response([
+                "message" => "Unregistred User."], 404);
+        } else{
+
+            $idUser = Game::where('user_id', '=', $id)->first('id');
+            $userName = user::find($id)->name;
+
+            if($idUser !== null){
+                $moves = Game::where('user_id', $id)->get();
+                return response([
+                    "message" => "User $userName's moves are: ",
+                    "moves"=> $moves
+                ], 200);
+            }elseif($idUser == null){
+            return response([
+                "message" => "User $userName has no moves to show."], 422);
+
+            }
+        }
+    }
+
         
 }      
        

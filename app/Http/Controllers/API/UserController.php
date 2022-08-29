@@ -17,14 +17,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $users = DB::table('users')
-        ->select('*')
-        ->get();
-    
-        return response()->json(['users' => $users,'status' => 200]);
-    }   
+    public function userAll(){
+        return User::all();
+    }  
 
     public function updateName(Request $request, $id)
     {
@@ -42,7 +37,8 @@ class UserController extends Controller
         $user->update($request->all());
         return $user;
 
-    }       
+    } 
+         
         
     
 }

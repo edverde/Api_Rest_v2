@@ -15,6 +15,10 @@ class GameController extends Controller
     // static $throws = 0;
     public function rollDice($id) 
     {
+        if (!User::find($id)) {
+            return response([
+                "message" => "Unregistred User."], 404);
+        } else{
        
             $dice1 = rand(1,6);
             $dice2 = rand(1,6);
@@ -46,23 +50,35 @@ class GameController extends Controller
             return response(["message" => "YOU LOSE! The sum of the two dice is:  $total."]);
             }
         } 
-
+    }
     
 
     public function delete($id)
-    {
-        $idUser = Game::where('user_id', '=', $id)->first('id');
-        $userName = user::find($id)->name;
+    {   
 
-        if($idUser !== null){
-            Game::where('user_id', $id)->delete();
+        if (!User::find($id)) {
             return response([
-                "message" => "borrado."], 200);
-        }elseif($idUser == null){
-        return response([
-            "message" => "no hay nada que borrar"], 200);
+                "message" => "Unregistred User."], 404);
+        } else{
 
+            $idUser = Game::where('user_id', '=', $id)->first('id');
+            $userName = user::find($id)->name;
+
+            if($idUser !== null){
+                Game::where('user_id', $id)->delete();
+                return response([
+                    "message" => "User $userName's moves have been deleted."], 200);
+            }elseif($idUser == null){
+            return response([
+                "message" => "User $userName has no moves to delete"], 422);
+
+            }
         }
+
+
+
+
+        
         
         // Game::where('user_id', $id)->delete();
         

@@ -12,20 +12,19 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
+    // static $throws = 0;
     public function rollDice($id) 
     {
-        $authorization = Auth::user()->id;
-        $throws = 0;
-        static $totalthrows = 0;
-
         if (!User::find($id)) {
-            return response(["message" => "Unregistered user."], 422);//La petición estaba bien formada pero no se pudo seguir debido a errores de semántica.
-        } elseif ($authorization == $id) {
+            return response([
+                "message" => "Unregistred User."], 404);
+        } else{
+       
             $dice1 = rand(1,6);
             $dice2 = rand(1,6);
             $total = $dice1 + $dice2;
-            $throws += 1;
-            $totalthrows += 1;
+            // self::$throws+=1;
+            
         
         if ($total == 7) {
             $result = 1;
@@ -45,13 +44,79 @@ class GameController extends Controller
         ->get();
 
         if ($result == 1) {
-            return response(["message" => "YOU WIN! <br> The sum of the two dice is:  $total  and you have throw $throws times."]);
+            return response(["message" => "YOU WIN! The sum of the two dice is:  $total."]);
         } else {
 
-            return response(["message" => "YOU LOSE! <br> The sum of the two dice is:  $total  and you have throw $throws times."]);
+            return response(["message" => "YOU LOSE! The sum of the two dice is:  $total."]);
             }
         } 
+    }
+    
+
+    public function delete($id)
+    {   
+
+        if (!User::find($id)) {
+            return response([
+                "message" => "Unregistred User."], 404);
+        } else{
+
+            $idUser = Game::where('user_id', '=', $id)->first('id');
+            $userName = user::find($id)->name;
+
+            if($idUser !== null){
+                Game::where('user_id', $id)->delete();
+                return response([
+                    "message" => "User $userName's moves have been deleted."], 200);
+            }elseif($idUser == null){
+            return response([
+                "message" => "User $userName has no moves to delete"], 422);
+
+            }
+        }
+
+
+
+
         
         
-    }  
-}
+        // Game::where('user_id', $id)->delete();
+        
+        // return response([
+        //     "message" => "Las jugadas del usuario $userName han sido eliminadas del sistema."], 200);
+       
+
+
+
+
+
+
+
+        // $userName = User::find($id)->name;
+        // $idUser = DB::table('games')->where('user_id', '=', $id);
+
+        // if(!User::find($id)){
+
+        //         return response(["message" => "Unregistered user."], 422);
+            
+        //     }elseif($idUser->first('id') == null){
+
+        //         return response()->json([
+        //         "message" =>  "User $userName has no moves to delete.",
+        //         ]);
+        
+        
+        //     }else{
+        //     $idUser->delete();
+        //         return response()->json([
+        //         "message" =>  "User $userName's moves have been deleted.",
+        //     ]);
+        // }
+    }
+        
+}      
+       
+
+        
+        
+    

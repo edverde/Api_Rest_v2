@@ -13,7 +13,7 @@ class GameController extends Controller
 {
    
     public function rollDice($id) 
-    {
+    { //auth
         if (!User::find($id)) {
             return response([
                 "message" => "Unregistred User."], 404);

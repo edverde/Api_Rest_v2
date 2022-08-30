@@ -30,12 +30,18 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 // Route::middleware('auth:api')->group(function () {
 
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
-    Route::get('/players', [UserController::class, 'userAll'])->name('allUsers');
+    Route::get('/users', [UserController::class, 'userAll'])->name('allUsers');
     Route::put('/players/{id}', [UserController::class, 'updateName'])->name('updateName');
 
+    Route::get('/players', [GameController::class, 'successRate'])->name('successRate');
     Route::post('/players/{id}/games', [GameController::class, 'rollDice'])->name('rollDice');
     Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('delete');
     Route::get('/players/{id}/games', [GameController::class, 'show'])->name('show');
 
     Route::get('/players/ranking', [GameController::class, 'ranking'])->name('ranking');
+    Route::get('/players/ranking/loser', [GameController::class, 'loser'])->name('loser');
+    Route::get('/players/ranking/winner', [GameController::class, 'winner'])->name('winner');
+    Route::get('/players/ranking/top5', [GameController::class, 'top5'])->name('top5');
+
+    
 // });

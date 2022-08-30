@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Constraint\Count;
@@ -23,7 +22,7 @@ class GameController extends Controller
             $dice1 = rand(1,6);
             $dice2 = rand(1,6);
             $total = $dice1 + $dice2;
-            // self::$throws+=1;
+            
             
         
         if ($total == 7) {
@@ -74,44 +73,50 @@ class GameController extends Controller
 
             }
         }
+    }
 
-
-
-
+    public function show($id){
         
-        
-        // Game::where('user_id', $id)->delete();
-        
-        // return response([
-        //     "message" => "Las jugadas del usuario $userName han sido eliminadas del sistema."], 200);
-       
 
+        if (!User::find($id)) {
+            return response([
+                "message" => "Unregistred User."], 404);
+        } else{
 
+            $idUser = Game::where('user_id', '=', $id)->first('id');
+            $userName = user::find($id)->name;
 
+            if($idUser !== null){
+                $moves = Game::where('user_id', $id)->get();
+                return response([
+                    "message" => "User $userName's moves are: ",
+                    "moves"=> $moves
+                ], 200);
+            }elseif($idUser == null){
+            return response([
+                "message" => "User $userName has no moves to show."], 422);
 
+            }
+        }
+    }
 
+    public function ranking(){
 
+        $ranking = DB::table('games')        
+        ->join('users', 'games.user_id', '=', 'users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
+        ->orderby('Triumph', 'desc')
+        ->orderby('Total_Plays')
+        ->groupby('Player')
+        ->get();
 
-        // $userName = User::find($id)->name;
-        // $idUser = DB::table('games')->where('user_id', '=', $id);
-
-        // if(!User::find($id)){
-
-        //         return response(["message" => "Unregistered user."], 422);
-            
-        //     }elseif($idUser->first('id') == null){
-
-        //         return response()->json([
-        //         "message" =>  "User $userName has no moves to delete.",
-        //         ]);
-        
-        
-        //     }else{
-        //     $idUser->delete();
-        //         return response()->json([
-        //         "message" =>  "User $userName's moves have been deleted.",
-        //     ]);
-        // }
+        return response()->json([
+                
+            "ranking" => $ranking,
+        ]);
     }
         
 }      

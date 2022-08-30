@@ -24,15 +24,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [RegisterController::class, 'register'])->name('api.register');
-Route::post('/login', [LoginController::class, 'login'])->name('api.login');
+Route::post('/players', [RegisterController::class, 'register'])->name('register');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 // Route::middleware('auth:api')->group(function () {
 
-    Route::post('/logout', [LogoutController::class, 'logout'])->name('api.logout');
-    Route::get('/users', [UserController::class, 'index'])->name('api.users.index');
-    Route::put('players/{id}', [UserController::class, 'updateName'])->name('api.players.updateName');
+    Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::get('/players', [UserController::class, 'userAll'])->name('allUsers');
+    Route::put('/players/{id}', [UserController::class, 'updateName'])->name('updateName');
 
-    Route::post('players/{id}/games', [GameController::class, 'rollDice'])->name('api.players.rollDice');
-    Route::delete('players/{id}/games', [GameController::class, 'delete'])->name('api.players.delete');
+    Route::post('/players/{id}/games', [GameController::class, 'rollDice'])->name('rollDice');
+    Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('delete');
+    Route::get('/players/{id}/games', [GameController::class, 'show'])->name('show');
+
+    Route::get('/players/ranking', [GameController::class, 'ranking'])->name('ranking');
 // });

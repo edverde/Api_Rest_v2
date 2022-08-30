@@ -31,9 +31,11 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
     Route::get('/players', [UserController::class, 'userAll'])->name('allUsers');
-    Route::put('players/{id}', [UserController::class, 'updateName'])->name('updateName');
+    Route::put('/players/{id}', [UserController::class, 'updateName'])->name('updateName');
 
-    Route::post('players/{id}/games', [GameController::class, 'rollDice'])->name('rollDice');
-    Route::delete('players/{id}/games', [GameController::class, 'delete'])->name('delete');
+    Route::post('/players/{id}/games', [GameController::class, 'rollDice'])->name('rollDice');
+    Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('delete');
     Route::get('/players/{id}/games', [GameController::class, 'show'])->name('show');
+
+    Route::get('/players/ranking', [GameController::class, 'ranking'])->name('ranking');
 // });

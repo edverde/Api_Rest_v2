@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Constraint\Count;
@@ -23,7 +22,7 @@ class GameController extends Controller
             $dice1 = rand(1,6);
             $dice2 = rand(1,6);
             $total = $dice1 + $dice2;
-            // self::$throws+=1;
+            
             
         
         if ($total == 7) {
@@ -101,6 +100,24 @@ class GameController extends Controller
         }
     }
 
+    public function ranking(){
+
+        $ranking = DB::table('games')        
+        ->join('users', 'games.user_id', '=', 'users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
+        ->orderby('Triumph', 'desc')
+        ->orderby('Total_Plays')
+        ->groupby('Player')
+        ->get();
+
+        return response()->json([
+                
+            "ranking" => $ranking,
+        ]);
+    }
         
 }      
        

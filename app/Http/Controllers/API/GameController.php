@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
-    // static $throws = 0;
+   
     public function rollDice($id) 
     {
         if (!User::find($id)) {
@@ -109,16 +109,70 @@ class GameController extends Controller
          sum(games.result = 1) as Win_Games, 
          concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
         ->orderby('Triumph', 'desc')
-        ->orderby('Total_Plays')
         ->groupby('Player')
         ->get();
 
-        return response()->json([
-                
-            "ranking" => $ranking,
-        ]);
-    }
+        return  $ranking;
         
+    }
+    
+    public function loser(){
+        $loser = DB::table('games')
+        ->join('users','games.user_id','=','users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
+        ->orderby('Triumph')
+        ->groupby('Player')
+        ->limit(1)
+        ->get();
+
+        return $loser;
+    }
+
+    public function winner(){
+        $winner = DB::table('games')
+        ->join('users','games.user_id','=','users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
+        ->orderby('Triumph', 'desc')
+        ->groupby('Player')
+        ->limit(1)
+        ->get();
+
+        return $winner;
+    }
+
+    public function top5(){
+        $top5 = DB::table('games')
+        ->join('users','games.user_id','=','users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')  
+        ->orderby('Triumph', 'desc')
+        ->groupby('Player')
+        ->limit(5)
+        ->get();
+
+        return $top5;
+    }
+
+    public function successRate(){
+        $successRate = DB::table('games')
+        ->join('users','games.user_id','=','users.id')
+        ->selectRaw('users.name as Player, 
+         count(games.result) as Total_Plays,
+         sum(games.result = 1) as Win_Games, 
+         concat(round(sum(games.result = 1)*100/count(games.result)),"%") as Triumph')         
+       ->groupBy('users.name')
+       ->get();
+
+       return $successRate;
+    }     
 }      
        
 

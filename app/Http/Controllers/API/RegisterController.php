@@ -15,11 +15,26 @@ class RegisterController extends Controller
 {
     public function register(Request $request){
         
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
+        if($request['name'] == null){
+            $validatedData = $request->validate([
+                'name' => 'nullable',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:8|confirmed',
+                'password_confirmation' => 'required'
+            ]);
+            
+            $validatedData['name'] = 'Guest';
+
+        }else{
+
+            $validatedData = $request->validate([
+            'name' => 'required|string|unique:users|max:15',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required'
         ]);
+        }
+        
         
         $validatedData['password'] = Hash::make($request->password);
         
@@ -31,7 +46,7 @@ class RegisterController extends Controller
             
             'user' => $user,
             'acess_token' => $accessToken
-        ]);
+        ],201);
         
     }
 }

@@ -13,7 +13,7 @@ class GameController extends Controller
 {
    
     public function rollDice($id) 
-    { //auth
+    { 
         if (!User::find($id)) {
             return response([
                 "message" => "Unregistred User."], 404);
@@ -27,28 +27,29 @@ class GameController extends Controller
         
         if ($total == 7) {
             $result = 1;
+            $print_result = 'WIN';
             
         } else {
             $result = 0;
-          
+            $print_result = 'LOSE';
         }
+        
 
         Game::create([
             "dice1" => $dice1,
             "dice2" => $dice2,
             "result" => $result,
+            "print_result" => $print_result,
             "user_id" => $id
+            
         ])
         ->where('user_id', '=', $id)
         ->get();
 
-        if ($result == 1) {
-            return response(["message" => "YOU WIN! The sum of the two dice is:  $total."]);
-        } else {
-
-            return response(["message" => "YOU LOSE! The sum of the two dice is:  $total."]);
-            }
-        } 
+       
+        return response(["message" => "YOU $print_result! The sum of the two dice is:  $total."]);
+       
+        }
     }
     
 

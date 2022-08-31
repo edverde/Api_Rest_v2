@@ -13,6 +13,7 @@ class Game extends Model
         'dice1',
         'dice2',
         'result',
+        'print_result',
         'user_id'
     ];
 

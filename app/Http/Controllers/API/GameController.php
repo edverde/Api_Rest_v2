@@ -14,95 +14,106 @@ class GameController extends Controller
    
     public function rollDice($id) 
     { 
-        if (!User::find($id)) {
+        $auth = Auth::user()->id;
+
+        if(!User::find($id)) 
+        {
             return response([
                 "message" => "Unregistred User."], 404);
-        } else{
-       
+        }elseif($auth == $id)
+        {
             $dice1 = rand(1,6);
             $dice2 = rand(1,6);
             $total = $dice1 + $dice2;
-            
-            
         
-        if ($total == 7) {
-            $result = 1;
-            $print_result = 'WIN';
+            if($total == 7) 
+            {
+                $result = 1;
+                $print_result = 'WIN';
+            }else 
+            {
+                $result = 0;
+                $print_result = 'LOSE';
+            }
             
-        } else {
-            $result = 0;
-            $print_result = 'LOSE';
-        }
-        
-
-        Game::create([
+            Game::create([
             "dice1" => $dice1,
             "dice2" => $dice2,
             "result" => $result,
             "print_result" => $print_result,
             "user_id" => $id
-            
-        ])
-        ->where('user_id', '=', $id)
-        ->get();
-
+            ])->where('user_id', '=', $id)->get();
+        
+            return response(["message" => "YOU $print_result! The sum of the two dice is:  $total."]);
        
-        return response(["message" => "YOU $print_result! The sum of the two dice is:  $total."]);
-       
+        }else
+        {
+            return response(["message" => "You are not authorized to perform this action."],403);
         }
     }
     
 
     public function delete($id)
     {   
+        $auth = Auth::user()->id;
 
         if (!User::find($id)) {
-            return response([
-                "message" => "Unregistred User."], 404);
-        } else{
 
+            return response(["message" => "Unregistred User."], 404);
+
+        }elseif($auth == $id)
+        {
             $idUser = Game::where('user_id', '=', $id)->first('id');
             $userName = user::find($id)->name;
 
-            if($idUser !== null){
+            if($idUser !== null)
+            {
                 Game::where('user_id', $id)->delete();
-                return response([
-                    "message" => "User $userName's moves have been deleted."], 200);
-            }elseif($idUser == null){
-            return response([
-                "message" => "User $userName has no moves to delete"], 422);
+                return response(["message" => "User $userName's moves have been deleted."], 200);
 
+            }elseif($idUser == null)
+            {
+                return response(["message" => "User $userName has no moves to delete"], 422);
             }
+        }else
+        {
+            return response(["message" => "You are not authorized to perform this action."],403);
         }
     }
 
-    public function show($id){
-        
 
-        if (!User::find($id)) {
-            return response([
-                "message" => "Unregistred User."], 404);
-        } else{
+    public function show($id)
+    {
+        $auth = Auth::user()->id;
 
+        if(!User::find($id)) 
+        {
+            return response(["message" => "Unregistred User."], 404);
+
+        }elseif($auth == $id)
+        {
             $idUser = Game::where('user_id', '=', $id)->first('id');
             $userName = user::find($id)->name;
 
-            if($idUser !== null){
+            if($idUser !== null)
+            {
                 $moves = Game::where('user_id', $id)->get();
-                return response([
-                    "message" => "User $userName's moves are: ",
-                    "moves"=> $moves
-                ], 200);
-            }elseif($idUser == null){
-            return response([
-                "message" => "User $userName has no moves to show."], 422);
+                return response(["message" => "User $userName's moves are: ","moves"=> $moves], 200);
 
+            }elseif($idUser == null)
+            {
+                return response(["message" => "User $userName has no moves to show."], 422);
+            }
+            else
+            {
+                return response(["message" => "You are not authorized to perform this action."],403);
             }
         }
     }
 
-    public function ranking(){
 
+    public function ranking()
+    {
         $ranking = DB::table('games')        
         ->join('users', 'games.user_id', '=', 'users.id')
         ->selectRaw('users.name as Player, 
@@ -114,10 +125,11 @@ class GameController extends Controller
         ->get();
 
         return  $ranking;
-        
     }
     
-    public function loser(){
+
+    public function loser()
+    {
         $loser = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -132,7 +144,9 @@ class GameController extends Controller
         return $loser;
     }
 
-    public function winner(){
+
+    public function winner()
+    {
         $winner = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -147,7 +161,9 @@ class GameController extends Controller
         return $winner;
     }
 
-    public function top5(){
+
+    public function top5()
+    {
         $top5 = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -162,7 +178,9 @@ class GameController extends Controller
         return $top5;
     }
 
-    public function successRate(){
+
+    public function successRate()
+    {
         $successRate = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 

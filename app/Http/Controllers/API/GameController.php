@@ -49,7 +49,6 @@ class GameController extends Controller
         }else
         {
             return response(["message" => "You are not authorized to perform this action."],403);
-            
         }
     }
     
@@ -82,33 +81,39 @@ class GameController extends Controller
         }
     }
 
-    public function show($id){
-        
 
-        if (!User::find($id)) {
-            return response([
-                "message" => "Unregistred User."], 404);
-        } else{
+    public function show($id)
+    {
+        $auth = Auth::user()->id;
 
+        if(!User::find($id)) 
+        {
+            return response(["message" => "Unregistred User."], 404);
+
+        }elseif($auth == $id)
+        {
             $idUser = Game::where('user_id', '=', $id)->first('id');
             $userName = user::find($id)->name;
 
-            if($idUser !== null){
+            if($idUser !== null)
+            {
                 $moves = Game::where('user_id', $id)->get();
-                return response([
-                    "message" => "User $userName's moves are: ",
-                    "moves"=> $moves
-                ], 200);
-            }elseif($idUser == null){
-            return response([
-                "message" => "User $userName has no moves to show."], 422);
+                return response(["message" => "User $userName's moves are: ","moves"=> $moves], 200);
 
+            }elseif($idUser == null)
+            {
+                return response(["message" => "User $userName has no moves to show."], 422);
+            }
+            else
+            {
+                return response(["message" => "You are not authorized to perform this action."],403);
             }
         }
     }
 
-    public function ranking(){
 
+    public function ranking()
+    {
         $ranking = DB::table('games')        
         ->join('users', 'games.user_id', '=', 'users.id')
         ->selectRaw('users.name as Player, 
@@ -120,10 +125,11 @@ class GameController extends Controller
         ->get();
 
         return  $ranking;
-        
     }
     
-    public function loser(){
+
+    public function loser()
+    {
         $loser = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -138,7 +144,9 @@ class GameController extends Controller
         return $loser;
     }
 
-    public function winner(){
+
+    public function winner()
+    {
         $winner = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -153,7 +161,9 @@ class GameController extends Controller
         return $winner;
     }
 
-    public function top5(){
+
+    public function top5()
+    {
         $top5 = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 
@@ -168,7 +178,9 @@ class GameController extends Controller
         return $top5;
     }
 
-    public function successRate(){
+
+    public function successRate()
+    {
         $successRate = DB::table('games')
         ->join('users','games.user_id','=','users.id')
         ->selectRaw('users.name as Player, 

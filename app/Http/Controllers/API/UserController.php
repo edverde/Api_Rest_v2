@@ -15,7 +15,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function userAll(){
-        if (Auth::user()->role != "1") {
+        if (Auth::user()->role != 1) {
             return response()->json([
                 'message' => 'Sorry but you are not allowed to realice this action.',
                 
@@ -23,8 +23,6 @@ class UserController extends Controller
         } else {
             return User::all();
         }
-       
-        
     }  
 
     public function updateName(Request $request, $id)
@@ -34,7 +32,7 @@ class UserController extends Controller
             return response([
                 "message" => "User not found."
                     ], 404);
-        }elseif ($auth == $id) {
+        }elseif($auth == $id) {
         
             $user = User::find($id);
                 
@@ -43,7 +41,7 @@ class UserController extends Controller
                 'email' => 'email|max:255|unique:users,email,',   
             ]);
         
-        }else {
+        }else{
             return response([
                 "message" => "You are not authorized to perform this action."
                     ], 401);
@@ -51,9 +49,5 @@ class UserController extends Controller
 
         $user->update($request->all());
         return $user;
-
     } 
-         
-        
-    
 }

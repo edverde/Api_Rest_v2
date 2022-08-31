@@ -35,7 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users', [UserController::class, 'userAll'])->name('allUsers');//role admin
     Route::put('/players/{id}', [UserController::class, 'updateName'])->name('updateName');
 
-    Route::get('/players', [GameController::class, 'successRate'])->name('successRate');//role admin
+    Route::get('/players', [GameController::class, 'successRate'])->name('successRate');
     Route::post('/players/{id}/games', [GameController::class, 'rollDice'])->name('rollDice');
     Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('delete');
     Route::get('/players/{id}/games', [GameController::class, 'show'])->name('show');

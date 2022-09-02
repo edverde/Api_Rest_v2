@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 class RegisterController extends Controller
 {
+    
+
     public function register(Request $request){
+        // var_dump(self::$guest);die();
         
         if($request['name'] == null){
             $validatedData = $request->validate([
@@ -17,8 +20,8 @@ class RegisterController extends Controller
                 'password' => 'required|min:8|confirmed',
                 'password_confirmation' => 'required'
             ]);
-            
-            $validatedData['name'] = 'Guest';
+            $rand= rand(1,100000);
+            $validatedData['name'] = 'Guest'.$rand;
 
         }else{
 

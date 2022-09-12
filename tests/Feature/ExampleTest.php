@@ -12,6 +12,13 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
+
+
+
+     
+    //para testear usar el comando en la terminal
+    //  ./vendor/bin/phpunit --filter nombre_de_la_funcion
+
     public function test_example()
     {
         $response = $this->get('/');

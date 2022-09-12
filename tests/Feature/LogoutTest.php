@@ -22,17 +22,11 @@ class LogoutTest extends TestCase
     
     public function test_authenticated_user_can_logout()
     {
+        $this->artisan('passport:install');
+        $user = User::factory()->create();        
+        Passport::actingAs($user);
 
-    $this->artisan('passport:install');
-
-    $user = User::factory()->create();
-
-    
-    Passport::actingAs($user);
-
-    $response = $this->postJson('api/logout');
-
-    $response->assertStatus(200);
-
+        $response = $this->postJson(route('logout'));
+        $response->assertStatus(200);
     }
 }

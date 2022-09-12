@@ -22,5 +22,5 @@ class GameTest extends TestCase
 
 
     /** @test */
-    
+   
 }

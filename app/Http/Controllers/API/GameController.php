@@ -28,11 +28,11 @@ class GameController extends Controller
             if($total == 7) 
             {
                 $result = 1;
-                $print_result = 'WIN';
+                $print_result = 'win';
             }else 
             {
                 $result = 0;
-                $print_result = 'LOSE';
+                $print_result = 'lose';
             }
             
             Game::create([
@@ -43,7 +43,7 @@ class GameController extends Controller
             "user_id" => $id
             ])->where('user_id', '=', $id)->get();
         
-            return response(["message" => "YOU $print_result! The sum of the two dice is:  $total."]);
+            return response(["message" => "You $print_result! The sum of the two dice is:  $total."]);
        
         }else
         {
@@ -87,7 +87,7 @@ class GameController extends Controller
 
         if(!User::find($id)) 
         {
-            return response(["message" => "Unregistred User."], 404);
+            return response(["message" => "not found."], 404);
 
         }elseif($auth == $id)
         {
@@ -107,6 +107,8 @@ class GameController extends Controller
             {
                 return response(["message" => "You are not authorized to perform this action."],403);
             }
+        }else{
+            return response(["message" => "Not found."], 404);
         }
     }
 

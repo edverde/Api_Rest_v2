@@ -33,12 +33,13 @@ class UserController extends Controller
                 "message" => "User not found."
                     ], 404);
         }elseif($auth == $id) {
-        
+            
             $user = User::find($id);
                 
             $request->validate([
                 'name' => 'max:20|unique:users,name,',
-                'email' => 'email|max:255|unique:users,email,',   
+                'email' => 'email|max:255|unique:users,email,',  
+                'role' => 'disabled' 
             ]);
         
         }else{
